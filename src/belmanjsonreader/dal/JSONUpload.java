@@ -49,7 +49,7 @@ public class JSONUpload
             }
         };
 
-        exe.scheduleWithFixedDelay(task, 0, 30, TimeUnit.SECONDS);
+        exe.scheduleWithFixedDelay(task, 0, 15, TimeUnit.SECONDS);
     }
 
     public void uploaderJSON(String path) throws FileNotFoundException, IOException, ParseException, SQLException
