@@ -177,10 +177,10 @@ public class JSONUpload
     public boolean searchForExistingOrder(Connection con, String orderNumber) throws SQLException
     {
         boolean existingOrder = false;
-        PreparedStatement pstmt = con.prepareStatement("SELECT OrderNumber FROM ProdOrder WHERE OrderNumber = (?)");
-        pstmt.setString(1, orderNumber);
+        PreparedStatement ppst = con.prepareStatement("SELECT OrderNumber FROM ProdOrder WHERE OrderNumber = (?)");
+        ppst.setString(1, orderNumber);
 
-        ResultSet rs = pstmt.executeQuery();
+        ResultSet rs = ppst.executeQuery();
 
         if (rs.next())
         {
