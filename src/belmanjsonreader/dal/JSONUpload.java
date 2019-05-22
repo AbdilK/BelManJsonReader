@@ -23,16 +23,31 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ *
+ * @author Qash
+ */
 public class JSONUpload
 {
 
     private DBConnectionProvider db;
 
+    /**
+     *
+     * @throws IOException
+     */
     public JSONUpload() throws IOException
     {
         db = new DBConnectionProvider();
     }
 
+    /**
+     *
+     * @param args
+     * @throws SQLException
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
     public static void main(String[] args) throws SQLException, IOException, FileNotFoundException
     {
         ScheduledExecutorService exe = Executors.newScheduledThreadPool(1);
@@ -52,6 +67,14 @@ public class JSONUpload
         exe.scheduleWithFixedDelay(task, 0, 15, TimeUnit.SECONDS);
     }
 
+    /**
+     *
+     * @param path
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws ParseException
+     * @throws SQLException
+     */
     public void uploaderJSON(String path) throws FileNotFoundException, IOException, ParseException, SQLException
     {
         Object obj = new JSONParser().parse(new FileReader(path));
@@ -110,15 +133,36 @@ public class JSONUpload
         }
     }
 
+    /**
+     *
+     * @param folder
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws ParseException
+     * @throws SQLException
+     */
     public void findJSONFolder(File folder) throws IOException, FileNotFoundException, ParseException, SQLException
     {
         for (File listFile : folder.listFiles())
         {
             String path = listFile.getPath();
             uploaderJSON(path);
+            System.out.println("JSON has been loaded succesfully");
+            System.out.println("Updating again in 15 seconds");
+            System.out.println("--------------------------------");
         }
+        
     }
 
+    /**
+     *
+     * @param orderNumber
+     * @param customerName
+     * @param deliveryDate
+     * @param con
+     * @return id
+     * @throws SQLException
+     */
     public int uploadProdOrderDB(String orderNumber, String customerName, Date deliveryDate, Connection con) throws SQLException
     {
         PreparedStatement ppst = con.prepareStatement("INSERT INTO ProdOrder VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -139,6 +183,17 @@ public class JSONUpload
         return id;
     }
 
+    /**
+     *
+     * @param departmentName
+     * @param startDate
+     * @param endDate
+     * @param taskStatus
+     * @param estimatedTime
+     * @param con
+     * @param id
+     * @throws SQLException
+     */
     public void uploadDepTaskDB(String departmentName, Date startDate, Date endDate, boolean taskStatus, int estimatedTime, Connection con, int id) throws SQLException
     {
 
@@ -157,12 +212,19 @@ public class JSONUpload
         ppst1.execute();
     }
 
-    
-      public boolean searchForExistingTask(Connection con, String departmentName, int id) throws SQLException
+    /**
+     *
+     * @param con
+     * @param departmentName
+     * @param id
+     * @return existingTask
+     * @throws SQLException
+     */
+    public boolean searchForExistingTask(Connection con, String departmentName, int id) throws SQLException
     {
         boolean existingTask = false;
         PreparedStatement ppst1 = con.prepareStatement("SELECT ProductionID, DepartmentName FROM DepTask "
-                                                     + "WHERE DepartmentName = (?) AND ProductionID = (?)");
+                                                     + "WHERE DepartmentName = ? AND ProductionID = ?");
         ppst1.setString(1, departmentName);
         ppst1.setInt(2, id);
 
@@ -174,10 +236,17 @@ public class JSONUpload
         return existingTask;
     }
 
+    /**
+     *
+     * @param con
+     * @param orderNumber
+     * @return existingOrder
+     * @throws SQLException
+     */
     public boolean searchForExistingOrder(Connection con, String orderNumber) throws SQLException
     {
         boolean existingOrder = false;
-        PreparedStatement ppst = con.prepareStatement("SELECT OrderNumber FROM ProdOrder WHERE OrderNumber = (?)");
+        PreparedStatement ppst = con.prepareStatement("SELECT OrderNumber FROM ProdOrder WHERE OrderNumber = ?");
         ppst.setString(1, orderNumber);
 
         ResultSet rs = ppst.executeQuery();

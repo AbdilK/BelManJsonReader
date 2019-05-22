@@ -3,7 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Abdil-K/Documents/GitHub/BelManJsonReader/src/JSONUpload.java</file>
+            <file>file:/C:/Users/Qash/Documents/GitHub/BelManJsonReader/src/belmanjsonreader/be/Delivery.java</file>
+            <file>file:/C:/Users/Qash/Documents/GitHub/BelManJsonReader/src/belmanjsonreader/be/Customer.java</file>
+            <file>file:/C:/Users/Qash/Documents/GitHub/BelManJsonReader/src/belmanjsonreader/be/Example.java</file>
+            <file>file:/C:/Users/Qash/Documents/GitHub/BelManJsonReader/src/belmanjsonreader/dal/JSONUpload.java</file>
         </group>
     </open-files>
 </project-private>
