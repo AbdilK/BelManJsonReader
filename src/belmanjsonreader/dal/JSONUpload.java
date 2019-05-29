@@ -197,7 +197,7 @@ public class JSONUpload
     public void uploadDepTaskDB(String departmentName, Date startDate, Date endDate, boolean taskStatus, int estimatedTime, Connection con, int id) throws SQLException
     {
 
-        PreparedStatement ppst1 = con.prepareStatement("INSERT INTO DepTask VALUES (?,?,?,?,?,?,?)");
+        PreparedStatement ppst1 = con.prepareStatement("INSERT INTO DepTask VALUES (?,?,?,?,?,?)");
 
         java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
         java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
@@ -208,36 +208,8 @@ public class JSONUpload
         ppst1.setDate(4, sqlEndDate);
         ppst1.setInt(5, estimatedTime);
         ppst1.setBoolean(6, taskStatus);
-        ppst1.setString(7, getLastDepartment(id, sqlStartDate));
 
         ppst1.execute();
-    }
-    
-    /**
-     * 
-     * @param id
-     * @param startDate
-     * @return
-     * @throws SQLException 
-     */
-    public String getLastDepartment(int id, java.sql.Date startDate) throws SQLException {
-        
-        String lastDepartment = "";
-        try (Connection con = db.getConnection())
-        {
-            PreparedStatement ppst1 = con.prepareStatement("SELECT DepartmentName FROM DepTask WHERE ProductionID = ? AND EndDate = ?");
-            
-            ppst1.setInt(1, id);
-            ppst1.setDate(2, startDate);
-            
-            ResultSet rs = ppst1.executeQuery();
-            while(rs.next()) {
-                lastDepartment = rs.getString("DepartmentName");
-            }
-            
-        }
-        
-        return lastDepartment;
     }
 
     /**
