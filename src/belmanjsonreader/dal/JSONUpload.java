@@ -165,7 +165,7 @@ public class JSONUpload
      */
     public int uploadProdOrderDB(String orderNumber, String customerName, Date deliveryDate, Connection con) throws SQLException
     {
-        PreparedStatement ppst = con.prepareStatement("INSERT INTO ProdOrder VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement ppst = con.prepareStatement("INSERT INTO ProdOrder VALUES (?,?,?, 'Halvfab')", Statement.RETURN_GENERATED_KEYS);
 
         java.sql.Date sqlDate = new java.sql.Date(deliveryDate.getTime());
         ppst.setString(1, orderNumber);
