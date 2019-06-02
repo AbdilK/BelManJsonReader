@@ -29,12 +29,12 @@ import java.util.logging.Logger;
  */
 public class JSONUpload
 {
-
+    
     private DBConnectionProvider db;
 
     /**
-     *
-     * @throws IOException
+     * Her oprettes der forbindelse til databasen fra DBConnectionprovider filen
+     * @throws IOException kaster IOException hvis der opstår IO fejl
      */
     public JSONUpload() throws IOException
     {
@@ -42,11 +42,12 @@ public class JSONUpload
     }
 
     /**
-     *
+     * ScheduledExecutorService bruges til at finde JSON filen og opdatere tabellerne i databsen
+     * Der er en scheduled delay på 15 sekunder, som går ind og opdatere tabellerne i databasen for hver 15. sekund.
      * @param args
-     * @throws SQLException
-     * @throws IOException
-     * @throws FileNotFoundException
+     * @throws SQLException kaster SQLEXception hvis der opstår SQL fejl
+     * @throws IOException kaster IOEXception hvis der opstår IO fejl
+     * @throws FileNotFoundException kaster FileNotFoundException hvis filen ikke kan findes
      */
     public static void main(String[] args) throws SQLException, IOException, FileNotFoundException
     {
@@ -68,12 +69,12 @@ public class JSONUpload
     }
 
     /**
-     *
-     * @param path
-     * @throws FileNotFoundException
-     * @throws IOException
-     * @throws ParseException
-     * @throws SQLException
+     * Nedenstående kode indsætter alt data fra JSON filen ind i vores database
+     * @param path finder JSON filens filsti
+     * @throws FileNotFoundException kaster FileNotFoundException hvis JSON filen ikke kan findes
+     * @throws IOException kaster IOException hvis IO fejl opstår
+     * @throws ParseException kaster ParseException hvis der ikke kan parses
+     * @throws SQLException kaster SQLException hvis der opstår SQL fejl
      */
     public void uploaderJSON(String path) throws FileNotFoundException, IOException, ParseException, SQLException
     {
@@ -134,12 +135,12 @@ public class JSONUpload
     }
 
     /**
-     *
+     * Finder JSON filens mappe og printer samtidig en kommentar ud, hvor hvergang tabellen opdateres.
      * @param folder
-     * @throws IOException
-     * @throws FileNotFoundException
-     * @throws ParseException
-     * @throws SQLException
+     * @throws IOException kaster IOException hvis IO fejl opstår
+     * @throws FileNotFoundException kaster FileNotFoundException hvis JSON filen ikke kan findes
+     * @throws ParseException kaster ParseException hvis der ikke kan parses
+     * @throws SQLException kaster SQLException hvis der opstår SQL fejl
      */
     public void findJSONFolder(File folder) throws IOException, FileNotFoundException, ParseException, SQLException
     {
@@ -155,17 +156,18 @@ public class JSONUpload
     }
 
     /**
-     *
+     * Indsætter data fra JSON filen ind i ProdOrder tabellen på databasen
      * @param orderNumber
      * @param customerName
      * @param deliveryDate
      * @param con
-     * @return id
-     * @throws SQLException
+     * @return id returnerer ID
+     * @throws SQLException kaster SQLException hvis der opstår SQL fejl
      */
     public int uploadProdOrderDB(String orderNumber, String customerName, Date deliveryDate, Connection con) throws SQLException
     {
-        PreparedStatement ppst = con.prepareStatement("INSERT INTO ProdOrder VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement ppst = con.prepareStatement("INSERT INTO ProdOrder VALUES (?,?,?)", 
+                                                      Statement.RETURN_GENERATED_KEYS);
 
         java.sql.Date sqlDate = new java.sql.Date(deliveryDate.getTime());
         ppst.setString(1, orderNumber);
@@ -184,7 +186,7 @@ public class JSONUpload
     }
 
     /**
-     *
+     * Indsætter data fra JSON filen ind DepTask tabellen på databasen
      * @param departmentName
      * @param startDate
      * @param endDate
@@ -192,12 +194,13 @@ public class JSONUpload
      * @param estimatedTime
      * @param con
      * @param id
-     * @throws SQLException
+     * @throws SQLException kaster SQLException hvis der opstår SQL fejl
      */
     public void uploadDepTaskDB(String departmentName, Date startDate, Date endDate, boolean taskStatus, int estimatedTime, Connection con, int id) throws SQLException
     {
 
-        PreparedStatement ppst1 = con.prepareStatement("INSERT INTO DepTask VALUES (?,?,?,?,?,?,?)");
+        PreparedStatement ppst1 = con.prepareStatement("INSERT INTO DepTask VALUES "
+                                                        + "(?,?,?,?,?,?,?)");
 
         java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
         java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
@@ -214,11 +217,11 @@ public class JSONUpload
     }
     
     /**
-     * 
+     * Finder den sidste department som en ordre har været i
      * @param id
      * @param startDate
      * @return
-     * @throws SQLException 
+     * @throws SQLException kaster SQLException hvis der opstår SQL fejl
      */
     public String getLastDepartment(int id, java.sql.Date startDate) throws SQLException {
         
@@ -241,12 +244,12 @@ public class JSONUpload
     }
 
     /**
-     *
+     * Nedenstående kode finder en task, efter ordrens productionsID og productionsNavn
      * @param con
      * @param departmentName
      * @param id
      * @return existingTask
-     * @throws SQLException
+     * @throws SQLException kaster SQLException hvis der opstår SQL fejl
      */
     public boolean searchForExistingTask(Connection con, String departmentName, int id) throws SQLException
     {
@@ -265,11 +268,11 @@ public class JSONUpload
     }
 
     /**
-     *
+     * Nedenstående kode finder en ordre, efter ordrenummer
      * @param con
      * @param orderNumber
      * @return existingOrder
-     * @throws SQLException
+     * @throws SQLException kaster SQLException hvis der opstår SQL fejl
      */
     public boolean searchForExistingOrder(Connection con, String orderNumber) throws SQLException
     {
@@ -285,7 +288,12 @@ public class JSONUpload
         }
         return existingOrder;
     }
-
+    
+    /**
+     * Nedenstående parser datatypen Long til en string
+     * @param dateString
+     * @return newDate
+     */
     private Date dateFormat(String dateString)
     {
         Long milli = Long.parseLong(dateString.substring(6, dateString.indexOf("+")));
