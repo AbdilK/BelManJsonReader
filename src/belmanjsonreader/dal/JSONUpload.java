@@ -166,8 +166,9 @@ public class JSONUpload
      */
     public int uploadProdOrderDB(String orderNumber, String customerName, Date deliveryDate, Connection con) throws SQLException
     {
-        PreparedStatement ppst = con.prepareStatement("INSERT INTO ProdOrder VALUES (?,?,?)", 
-                                                      Statement.RETURN_GENERATED_KEYS);
+
+        PreparedStatement ppst = con.prepareStatement("INSERT INTO ProdOrder VALUES (?,?,?, 'Halvfab')", Statement.RETURN_GENERATED_KEYS);
+
 
         java.sql.Date sqlDate = new java.sql.Date(deliveryDate.getTime());
         ppst.setString(1, orderNumber);
@@ -199,8 +200,9 @@ public class JSONUpload
     public void uploadDepTaskDB(String departmentName, Date startDate, Date endDate, boolean taskStatus, int estimatedTime, Connection con, int id) throws SQLException
     {
 
-        PreparedStatement ppst1 = con.prepareStatement("INSERT INTO DepTask VALUES "
-                                                        + "(?,?,?,?,?,?,?)");
+
+        PreparedStatement ppst1 = con.prepareStatement("INSERT INTO DepTask VALUES (?,?,?,?,?,?)");
+
 
         java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
         java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
@@ -211,10 +213,10 @@ public class JSONUpload
         ppst1.setDate(4, sqlEndDate);
         ppst1.setInt(5, estimatedTime);
         ppst1.setBoolean(6, taskStatus);
-        ppst1.setString(7, getLastDepartment(id, sqlStartDate));
 
         ppst1.execute();
     }
+
     
     /**
      * Finder den sidste department som en ordre har været i
@@ -242,6 +244,7 @@ public class JSONUpload
         
         return lastDepartment;
     }
+
 
     /**
      * Nedenstående kode finder en task, efter ordrens productionsID og productionsNavn
